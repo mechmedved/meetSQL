@@ -70,23 +70,67 @@ public class PersonDao {
 
     public Person getAllPeopleById(Long id) {
 
-        //return allPeople.stream().filter(p -> p.getId().equals(id)).findFirst().orElse(null);
-        return null;
+        Person person = null;
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "SELECT * FROM person WHERE id = " + id;
+
+            ResultSet resultSet = statement.executeQuery(sql);
+            while(resultSet.next()){
+                person = new Person();
+                person.setId(resultSet.getLong("id"));
+                person.setName(resultSet.getString("name"));
+                person.setAge(resultSet.getInt("age"));
+                person.setEmail(resultSet.getString("email"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return person;
     }
 
     public void savePerson(Person person) {
-        //person.setId(++NEXT_ID);
-        //allPeople.add(person);
+
+        Long max = getAllPeople().stream()
+                .map(p -> p.getId())
+                .max(Long::compareTo)
+                .orElse(null);
+
+        try {
+            Statement statement = connection.createStatement();
+            String sql ="INSERT INTO person (id, name, age, email) VALUES (" +
+                                    ++max + ",'" + person.getName() + "'," + person.getAge() + ",'" + person.getEmail() + "')";
+
+            statement.executeUpdate(sql);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(Person personFromForm, Long id) {
-        Person person = getAllPeopleById(id);
-        person.setName(personFromForm.getName());
-        person.setAge(personFromForm.getAge());
-        person.setEmail(personFromForm.getEmail());
+        //update person set name = '', age = 255, email = '' where id = 1;
+        try {
+            Statement statement = connection.createStatement();
+            String SQLQuery = "update person set name = '" + personFromForm.getName() + "', age = " + personFromForm.getAge() + ", email = '" + personFromForm.getEmail() + "' where id = " + id;
+
+            statement.executeUpdate(SQLQuery);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void delete(Long id) {
-        //allPeople.removeIf(person -> person.getId().equals(id));
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "DELETE FROM person WHERE id = " + id;
+
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

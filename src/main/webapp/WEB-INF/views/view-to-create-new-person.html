@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CreatePerson</title>
+</head>
+<body>
+
+<form th:method="post" th:action="@{/people}" th:object="${newPerson}">
+  <label for="nameOfInput">Input name</label>
+  <input id="nameOfInput" type="text" th:field="*{name}"/>
+  <div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+  <br/>
+  <label for="InputOfAge">Input age</label>
+  <input id="InputOfAge" type="text" th:field="*{age}"/>
+  <br/>
+  <div style="color: red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+  <label for="InputOfEmail">Input email</label>
+  <input id="InputOfEmail" type="text" th:field="*{email}"/>
+  <br/>
+  <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+  <input type="submit" value="Push to create new person"/>
+
+</form>
+
+</body>
+</html>
